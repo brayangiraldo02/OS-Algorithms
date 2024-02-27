@@ -18,11 +18,28 @@ def print_processes(processes):
   for p in processes:
     print("Name: " + p.name + " | Burst Time: " + str(p.burst_time) + " | Arrival Time: " + str(p.arrival_time) + " | Priority: " + str(p.priority))
 
+def algorithms(algorithm, processes):
+  if algorithm == "FCFS":
+    print("Using First Come First Serve Algorithm")
+    # Implement FCFS algorithm here
+  elif algorithm == "SJF":
+    print("Using Shortest Job First Algorithm")
+    # Implement SJF algorithm here
+  elif algorithm == "Priority":
+    print("Using Priority Algorithm")
+    # Implement Priority algorithm here
+  else:
+    print("Invalid Algorithm")
+  return processes
+
 def main():
   num_processes = int(input("Enter the number of processes: "))
   print("--------------------------------------------")
   processes = initialize_processes(num_processes)
   print_processes(processes)
+  print("--------------------------------------------")
+  algorithm = input("Enter the algorithm to be used: ")
+  processes = algorithms(algorithm, processes)
 
 if __name__ == "__main__":
   main()
