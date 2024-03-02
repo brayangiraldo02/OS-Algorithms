@@ -22,6 +22,7 @@ def algorithms(algorithm, processes):
   waiting_time = 0
   system_time = 0
   next_start_time = 0
+
   if algorithm == "FCFS":
     print("Using First Come First Serve Algorithm")
     for p in processes:
@@ -40,14 +41,18 @@ def algorithms(algorithm, processes):
     print("--------------------------------------------")
     print("Average Waiting Time: " + str(waiting_time / len(processes)))
     print("Average System Time: " + str(system_time / len(processes)))
+
   elif algorithm == "SJF":
     print("Using Shortest Job First Algorithm")
     # Implement SJF algorithm here
+
   elif algorithm == "Priority":
     print("Using Priority Algorithm")
     # Implement Priority algorithm here
+
   else:
     print("Invalid Algorithm")
+
   return processes
 
 def main():
