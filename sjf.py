@@ -1,4 +1,4 @@
-class sjf:
+class Sjf:
   def __init__(self, processes):
     self.processes = processes
 

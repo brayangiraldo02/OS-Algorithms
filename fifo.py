@@ -1,4 +1,4 @@
-class fifo:
+class Fifo:
   def __init__(self, processes):
     self.processes = processes
 
