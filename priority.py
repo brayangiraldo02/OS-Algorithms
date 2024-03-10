@@ -36,10 +36,4 @@ class Priority:
       else:
         next_start_time += 1
 
-    waiting_time = sum(p.waiting_time for p in completed_processes)
-    system_time = sum(p.system_time for p in completed_processes)
-    print("--------------------------------------------")
-    print("Average Waiting Time: " + str(waiting_time / len(self.processes)))
-    print("Average System Time: " + str(system_time / len(self.processes)))
-
     return completed_processes
