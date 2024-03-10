@@ -45,5 +45,5 @@ if __name__ == "__main__":
         process.completion_time = process.start_time + timedelta(seconds=process.burst_time)
 
     # Crea y muestra el diagrama de Gantt
-    gantt_chart = GanttChart(processes)
+    gantt_chart = Plotter(processes)
     gantt_chart.plot_gantt_chart()
