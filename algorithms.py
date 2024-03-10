@@ -1,4 +1,6 @@
 from process import process
+from fifo import fifo
+from sjf import sjf
 
 # Function for initializing objects based on the number of processes to be created
 def initialize_processes(num_processes):
@@ -10,7 +12,7 @@ def initialize_processes(num_processes):
     priority = int(input("Enter Priority for Process " + name + ": "))
     processes.append(process(name, burst_time, arrival_time, priority))
     print("--------------------------------------------")
-
+ 
   processes.sort(key=lambda x: x.arrival_time)
   return processes
 
@@ -28,22 +30,11 @@ def algorithms(algorithm, processes):
   if algorithm == "FIFO":
     print("Using First In, First Out Algorithm")
 
-    for p in processes:
-      p.start_time = next_start_time
-      p.completion_time = next_start_time
-      print("--------------------------------------------")
-      print("Process " + p.name + " start at: " + str(p.start_time))
+    f = fifo(processes)
+    completed_processes = f.run()
 
-      for bt in range(p.burst_time):
-        p.completion_time += 1
-        print("Process " + p.name + " completed at: " + str(p.completion_time))
-
-      p.waiting_time = p.start_time - p.arrival_time
-      p.system_time = p.completion_time - p.arrival_time
-      next_start_time = p.completion_time
-
-    waiting_time = sum(p.waiting_time for p in processes)
-    system_time = sum(p.system_time for p in processes)
+    waiting_time = sum(p.waiting_time for p in completed_processes)
+    system_time = sum(p.system_time for p in completed_processes)
     print("--------------------------------------------")
     print("Average Waiting Time: " + str(waiting_time / len(processes)))
     print("Average System Time: " + str(system_time / len(processes)))
@@ -51,34 +42,9 @@ def algorithms(algorithm, processes):
   elif algorithm == "SJF":
     print("Using Shortest Job First Algorithm")
     print("--------------------------------------------")
-    pending_processes = processes.copy()
-    completed_processes = []
-
-    while pending_processes:
-      eligible_processes = [p for p in pending_processes if p.arrival_time <= next_start_time]
-
-      if eligible_processes:
-        eligible_processes.sort(key=lambda x: x.burst_time)
-        current_process = eligible_processes.pop(0)
-        print_processes([current_process])
-
-        current_process.start_time = next_start_time
-        current_process.completion_time = next_start_time
-
-        for bt in range(current_process.burst_time):
-          current_process.completion_time += 1
-          print("Process " + current_process.name + " completed at: " + str(current_process.completion_time))
-
-        current_process.waiting_time = current_process.start_time - current_process.arrival_time
-        current_process.system_time = current_process.completion_time - current_process.arrival_time
-        next_start_time = current_process.completion_time
-
-        completed_processes.append(current_process)
-        pending_processes.remove(current_process)
-        print("--------------------------------------------")
-
-      else:
-        next_start_time += 1
+    
+    s = sjf(processes)
+    completed_processes = s.run()
 
     # Calcular tiempos promedio al finalizar todos los procesos
     waiting_time_sum = sum(p.waiting_time for p in completed_processes)
