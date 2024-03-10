@@ -14,12 +14,19 @@ class Sjf:
         eligible_processes.sort(key=lambda x: x.burst_time)
         current_process = eligible_processes.pop(0)
 
-        current_process.start_time = next_start_time
+        if current_process.arrival_time > next_start_time:
+          next_start_time = current_process.arrival_time
+          current_process.start_time = next_start_time
+        else:
+          current_process.start_time = next_start_time
         current_process.completion_time = next_start_time
 
-        for bt in range(current_process.burst_time):
-          current_process.completion_time += 1
-          print("Process " + current_process.name + " completed at: " + str(current_process.completion_time))
+        # for bt in range(current_process.burst_time):
+        #   current_process.completion_time += 1
+        #   print("Process " + current_process.name + " completed at: " + str(current_process.completion_time))
+        current_process.completion_time += current_process.burst_time
+        print("Process " + current_process.name + " start at: " + str(current_process.start_time))
+        print("Process " + current_process.name + " completed at: " + str(current_process.completion_time))
 
         current_process.waiting_time = current_process.start_time - current_process.arrival_time
         current_process.system_time = current_process.completion_time - current_process.arrival_time
