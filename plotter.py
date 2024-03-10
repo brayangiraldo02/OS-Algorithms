@@ -6,8 +6,6 @@ class Plotter:
         self.processes = processes
 
     def plot_gantt_chart(self):
-       
-
         # Crear listas para almacenar las etiquetas y los tiempos de inicio/fin
         labels = [process.name for process in self.processes]
         start_times = [process.start_time for process in self.processes]

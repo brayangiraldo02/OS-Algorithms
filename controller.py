@@ -35,8 +35,8 @@ class Controller:
                           style='Blue.TButton')
       button.pack(pady=5)
     
-    disabled_button = ttk.Button(root, text="Round Robbin", state="disabled")
-    disabled_button.pack(pady=5)
+    # disabled_button = ttk.Button(root, text="Round Robbin", state="disabled")
+    # disabled_button.pack(pady=5)
     style = ttk.Style()
     style.configure('Blue.TButton', foreground='white', background='blue')
 
