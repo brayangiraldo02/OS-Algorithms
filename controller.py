@@ -3,6 +3,7 @@ from tkinter import ttk
 from process import Process
 from fifo import Fifo
 from sjf import Sjf
+from priority import Priority
 from plotter import Plotter
 
 
@@ -138,6 +139,9 @@ class Controller:
     elif self.selected_algorithm == "SJF":
       sjf = Sjf(self.processes)
       self.solution = sjf.run()
+    elif self.selected_algorithm == "PRIORIDAD":
+      priority = Priority(self.processes)
+      self.solution = priority.run()
     for p in self.solution:
       print(p.__dict__)
 
