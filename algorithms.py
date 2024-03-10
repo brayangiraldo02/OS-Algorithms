@@ -10,7 +10,7 @@ def initialize_processes(num_processes):
     priority = int(input("Enter Priority for Process " + name + ": "))
     processes.append(process(name, burst_time, arrival_time, priority))
     print("--------------------------------------------")
-
+ 
   processes.sort(key=lambda x: x.arrival_time)
   return processes
 
