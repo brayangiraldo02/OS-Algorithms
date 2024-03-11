@@ -5,6 +5,7 @@ from fifo import Fifo
 from sjf import Sjf
 from priority import Priority
 from plotter import Plotter
+from PIL import Image, ImageTk
 
 
 class Controller:
@@ -23,23 +24,51 @@ class Controller:
   def get_algorithm(self):
     root = tk.Tk()
     root.title("Seleccionar Algoritmo")
-    root.geometry("300x200")
+    # Eliminar bordes y decoración estándar
+    # root.overrideredirect(True)
 
+    # Obtener dimensiones de la pantalla
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    # Calcular coordenadas para centrar la ventana
+    x_coordinate = (screen_width - 300) // 2
+    y_coordinate = (screen_height - 200) // 2
+
+    root.geometry(f"300x330+{x_coordinate}+{y_coordinate}")
+   
+     # Cargar la imagen desde el archivo ./assets/cpu.png
+    image_path = "./assets/cpu.png"
+    img = Image.open(image_path)
+    img = img.resize((100, 100), Image.ANTIALIAS)  
+    img = ImageTk.PhotoImage(img)
+
+    # Crear un label para mostrar la imagen
+    image_label = ttk.Label(root, image=img)
+    image_label.image = img  # Guardar una referencia para evitar que la imagen sea eliminada por el recolector de basura
+    image_label.pack(pady=5)
+    
     label = ttk.Label(root, text="Selecciona un algoritmo:")
     label.pack(pady=10)
 
-    algorithms = ["FIFO", "SJF", "PRIORIDAD"]
+    algorithms = ["FIFO", "SJF", "PRIORIDAD", "ROUND ROBIN"]
     
     for algorithm in algorithms:
       button = ttk.Button(root, text=algorithm, 
                           command=lambda a=algorithm: self.select_algorithm(a,root),
-                          style='Blue.TButton')
+                          style='Custom.TButton')
       button.pack(pady=5)
     
-    # disabled_button = ttk.Button(root, text="Round Robbin", state="disabled")
-    # disabled_button.pack(pady=5)
     style = ttk.Style()
-    style.configure('Blue.TButton', foreground='white', background='blue')
+    # Estilo del botón con bordes redondeados
+    style.configure('Custom.TButton', 
+                    foreground='white', 
+                    background='#4CAF50', 
+                    padding=(5, 5), 
+                    borderwidth=2, 
+                    relief=tk.RAISED, 
+                    bordercolor='white', 
+                    borderradius=5)
 
     root.mainloop()
 
@@ -51,28 +80,61 @@ class Controller:
   def get_processes_quantity(self):
     root = tk.Tk()
     root.title("Cantidad de Procesos")
-    root.geometry("300x200")
+    # Obtener dimensiones de la pantalla
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    # Calcular coordenadas para centrar la ventana
+    x_coordinate = (screen_width - 300) // 2
+    y_coordinate = (screen_height - 200) // 2
+
+    root.geometry(f"300x200+{x_coordinate}+{y_coordinate}")
+   
 
     label = ttk.Label(root, text="Ingresa la cantidad de procesos:")
     label.pack(pady=10)
 
+    entries=[]
+
     entry = ttk.Entry(root)
     entry.pack(pady=5)
+    entries.append(entry)
+
+    if self.selected_algorithm == "ROUND ROBIN":
+      label = ttk.Label(root, text="Ingrese el valor de Q:")
+      label.pack(pady=10)
+      entry = ttk.Entry(root)
+      entry.pack(pady=5)
+      entries.append(entry)
 
     button = ttk.Button(root, text="Aceptar", 
-                        command=lambda: self.set_processes_quantity(entry.get(), root),
-                        style='Blue.TButton')
+                        command=lambda: self.set_processes_quantity_and_Q(entries, root),
+                        style='Custom.TButton')
     button.pack(pady=5)
 
     style = ttk.Style()
-    style.configure('Blue.TButton', foreground='white', background='blue')
-
+    # Estilo del botón con bordes redondeados
+    style.configure('Custom.TButton', 
+                    foreground='white', 
+                    background='#4CAF50', 
+                    padding=(5, 5), 
+                    borderwidth=2, 
+                    relief=tk.RAISED, 
+                    bordercolor='white', 
+                    borderradius=5)
     root.mainloop()
 
-  def set_processes_quantity(self, quantity, root):
-    self.processes_quantity = int(quantity)
+#--------------------------------------------------------------------------------
+  def set_processes_quantity_and_Q(self, entries, root):
+    if self.selected_algorithm == "ROUND ROBIN":
+      self.processes_quantity = int(entries[0].get())
+      self.Q = int(entries[1].get())
+    else:
+      self.processes_quantity = int(entries[0].get())
+    
     root.destroy()
     self.get_processes(self.processes_quantity)
+
 
   def get_processes(self, quantity):
     for process in range(quantity):
@@ -81,7 +143,7 @@ class Controller:
 
   def get_individual_process(self, process_number):
     root = tk.Tk()
-    root.title(f"Proceso {process_number}")
+    root.title(f"Proceso {process_number+1}")
     root.geometry("400x300")
 
     if self.selected_algorithm == "PRIORIDAD":
