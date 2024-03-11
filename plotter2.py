@@ -1,19 +1,29 @@
-import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+
 
 class Plotter:
     def __init__(self, processes):
         self.processes = processes
-        self.finished_processes = []
-        self.avg_waiting_time = 0
-        self.avg_system_time = 0
 
     def plot_gantt_chart(self):
-        # Crear un gráfico de Gantt inicial vacío
+        # Crear listas para almacenar las etiquetas y los tiempos de inicio/fin
+        self.calc_stats()
+        labels = [process.name for process in self.processes]
+        start_times = [process.start_time for process in self.processes]
+        completion_times = [process.completion_time for process in self.processes]
+
+        # Calcular la duración total del gráfico de Gantt
+        total_duration = max(completion_times) + 2
+
+        # Crear un gráfico de Gantt
         fig, ax = plt.subplots()
 
         # Colores
         colors = plt.cm.Paired(range(len(self.processes)))
+
+        # Dibujar barras horizontales para cada proceso
+        for i, label in enumerate(labels):
+            ax.barh(label, completion_times[i] - start_times[i], left=start_times[i], color=colors[i])
 
         # Establecer etiquetas y título
         ax.set_xlabel('Tiempo')
@@ -21,57 +31,39 @@ class Plotter:
         ax.set_title('Gráfico de Gantt')
 
         # Mostrar promedio de tiempo de espera y tiempo de sistema en la parte inferior del gráfico
-        fig.text(0.5, 0, f"Tiempo de espera promedio: {self.avg_waiting_time:.2f}", ha='center', va='center', fontsize=8)
-        fig.text(0.5, -0.05, f"Tiempo de sistema promedio: {self.avg_system_time:.2f}", ha='center', va='center', fontsize=8)
+        ax.text(total_duration / 2, 0.1, f"Tiempo de espera promedio: {self.avg_waiting_time:.2f}", ha='center',
+                va='center')
+        ax.text(total_duration / 2, 0.2, f"Tiempo de sistema promedio: {self.avg_system_time:.2f}", ha='center',
+                va='center')
 
-        # Crear la función de actualización para la animación
-        def update(frame):
-            # Borra el gráfico anterior
-            ax.cla()
+        # Establecer límites del eje X
+        ax.set_xlim(0, total_duration)
 
-            # Dibujar barras horizontales para los procesos en ejecución
-            self.draw_running_processes(ax, frame, colors)
+        # Mostrar cuadrícula en el gráfico de Gantt
+        ax.grid(True, linestyle='--', alpha=0.7)
 
-            # Dibujar barras horizontales para los procesos terminados
-            self.draw_finished_processes(ax, colors)
+        # Subplot para mostrar la tabla de procesos
+        table_ax = plt.subplot(2, 1, 2)
+        table_ax.axis('off')
 
-            # Establecer etiquetas y título
-            ax.set_xlabel('Tiempo')
-            ax.set_ylabel('Procesos')
-            ax.set_title('Gráfico de Gantt')
+        # Crear tabla de procesos
+        table = table_ax.table(cellText=[[process.name, process.arrival_time, process.burst_time, process.priority,
+                                          process.start_time, process.completion_time, process.waiting_time,
+                                          process.system_time] for process in self.processes],
+                               colLabels=['Nombre', 'T. llegada', 'T. ráfaga', 'Prioridad', 'T. inicio',
+                                          'T. finalización', 'T. de espera', 'T. de sistema'],
+                               loc='center')
 
-            # Establecer límites del eje X
-            ax.set_xlim(0, frame + 2)
+        # Establecer tamaño de la fuente
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.scale(1, 1.5)
 
-            # Mostrar promedio de tiempo de espera y tiempo de sistema en la parte inferior del gráfico
-            fig.text(0.5, 0, f"Tiempo de espera promedio: {self.avg_waiting_time:.2f}", ha='center', va='center', fontsize=8)
-            fig.text(0.5, -0.05, f"Tiempo de sistema promedio: {self.avg_system_time:.2f}", ha='center', va='center', fontsize=8)
+        # Ajustar diseño para evitar superposición de subgráficos
+        fig.tight_layout()
 
-        # Crear la animación
-        ani = animation.FuncAnimation(fig, update, frames=self.get_animation_frames(), repeat=False)
-
-        # Mostrar el gráfico
         plt.show()
 
-    def draw_running_processes(self, ax, frame, colors):
-        # Dibujar barras horizontales para los procesos en ejecución
-        for process in self.processes:
-            if process.start_time <= frame < process.completion_time:
-                ax.barh(process.name, frame - process.start_time, left=process.start_time, color=colors[self.processes.index(process)])
-
-    def draw_finished_processes(self, ax, colors):
-        # Dibujar barras horizontales para los procesos terminados
-        for process in self.finished_processes:
-            ax.barh(process.name, process.completion_time - process.start_time, left=process.start_time, color=colors[self.processes.index(process)])
-
-    def get_animation_frames(self):
-        # Obtener la lista de frames para la animación
-        all_frames = []
-        for process in self.processes:
-            all_frames.extend(range(process.start_time, process.completion_time + 1))
-        return all_frames
-
     def calc_stats(self):
-        self.avg_system_time = sum([process.system_time for process in self.processes])/len(self.processes)
-        self.avg_waiting_time = sum([process.waiting_time for process in self.processes])/len(self.processes)
-
+        self.avg_system_time = sum([process.system_time for process in self.processes]) / len(self.processes)
+        self.avg_waiting_time = sum([process.waiting_time for process in self.processes]) / len(self.processes)
