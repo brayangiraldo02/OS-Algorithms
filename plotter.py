@@ -1,49 +1,47 @@
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from datetime import datetime
-from process import Process
+
 
 class Plotter:
     def __init__(self, processes):
         self.processes = processes
-        self.fig, self.ax = plt.subplots()
+        
 
     def plot_gantt_chart(self):
+        # Crear listas para almacenar las etiquetas y los tiempos de inicio/fin
+        self.calc_stats()
+        labels = [process.name for process in self.processes]
+        start_times = [process.start_time for process in self.processes]
+        completion_times = [process.completion_time for process in self.processes]
+
+        # Calcular la duración total del gráfico de Gantt
+        total_duration = max(completion_times) + 2
+
+        # Crear un gráfico de Gantt
+        fig, ax = plt.subplots()
+
+        # Colores
         colors = plt.cm.Paired(range(len(self.processes)))
 
-        for i, process in enumerate(self.processes):
-            start_time = process.start_time
-            end_time = process.completion_time
+        # Dibujar barras horizontales para cada proceso
+        for i, label in enumerate(labels):
+            ax.barh(label, completion_times[i] - start_times[i], left=start_times[i], color=colors[i])
 
-            self.ax.barh(process.name, end_time - start_time, left=start_time, color=colors[i], label=process.name)
+        # Establecer etiquetas y título
+        ax.set_xlabel('Tiempo')
+        ax.set_ylabel('Procesos')
+        ax.set_title('Gráfico de Gantt')
+        
+				# # Mostrar promedio de tiempo de espera y tiempo de sistema en la parte inferior del gráfico
+        ax.text(total_duration / 2, 0.1, f"Tiempo de espera promedio: {self.avg_waiting_time:.2f}", ha='center', va='center')
+        ax.text(total_duration / 2, 0.2, f"Tiempo de sistema promedio: {self.avg_system_time:.2f}", ha='center', va='center')
 
-        self.ax.set_xlabel('Tiempo')
-        self.ax.set_ylabel('Procesos')
-        self.ax.set_title('Diagrama de Gantt')
-
-        # Ajusta el formato del eje x para mostrar el tiempo
-        self.ax.xaxis_date()
-        self.ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
-
-        plt.legend()
+        # Establecer límites del eje X
+        ax.set_xlim(0, total_duration)
+        
         plt.show()
 
-# Ejemplo de uso:
-if __name__ == "__main__":
-    from datetime import timedelta
+    def calc_stats(self):
+        self.avg_system_time = sum([process.system_time for process in self.processes])/len(self.processes)
+        self.avg_waiting_time = sum([process.waiting_time for process in self.processes])/len(self.processes)
 
-    # Supongamos que tienes una lista de procesos
-    processes = [
-        Process(name="P1", burst_time=5, arrival_time=0, priority=2),
-        Process(name="P2", burst_time=3, arrival_time=2, priority=1),
-        Process(name="P3", burst_time=4, arrival_time=4, priority=3),
-    ]
 
-    # Simula la asignación de tiempos de inicio y finalización a los procesos
-    for i, process in enumerate(processes):
-        process.start_time = datetime.now() + timedelta(seconds=i * 2)
-        process.completion_time = process.start_time + timedelta(seconds=process.burst_time)
-
-    # Crea y muestra el diagrama de Gantt
-    gantt_chart = GanttChart(processes)
-    gantt_chart.plot_gantt_chart()
