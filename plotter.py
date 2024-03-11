@@ -47,7 +47,7 @@ class Plotter:
 
         # Crear tabla de procesos
         table = plt.table(cellText=[[process.name, process.arrival_time, process.burst_time, process.priority, process.start_time, process.completion_time, process.waiting_time, process.system_time] for process in self.processes],
-                          colLabels=['Nombre', 'T. llegada', 'T. ráfaga', 'Prioridad', 'T. inicio', 'T. finalización', 'T. de espera', 'T. de sistema'],
+                          colLabels=['Nombre', 'T. llegada', 'T. ráfaga', 'Prioridad', 'T. inicio', 'T. finalización', 'T. de espera', 'T de sistema'],
                           loc='center')
         
         # Establecer tamaño de la fuente

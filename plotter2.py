@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
 
 
 class Plotter:
@@ -15,8 +16,12 @@ class Plotter:
         # Calcular la duración total del gráfico de Gantt
         total_duration = max(completion_times) + 2
 
-        # Crear un gráfico de Gantt
-        fig, ax = plt.subplots()
+        # Crear un gráfico de Gantt y una tabla utilizando GridSpec
+        fig = plt.figure(figsize=(10, 6))
+        gs = GridSpec(3, 1, height_ratios=[1, 1, 0.2], hspace=0.3)
+
+        # Gráfico de Gantt
+        ax = fig.add_subplot(gs[0])
 
         # Colores
         colors = plt.cm.Paired(range(len(self.processes)))
@@ -30,20 +35,14 @@ class Plotter:
         ax.set_ylabel('Procesos')
         ax.set_title('Gráfico de Gantt')
 
-        # Mostrar promedio de tiempo de espera y tiempo de sistema en la parte inferior del gráfico
-        ax.text(total_duration / 2, 0.1, f"Tiempo de espera promedio: {self.avg_waiting_time:.2f}", ha='center',
-                va='center')
-        ax.text(total_duration / 2, 0.2, f"Tiempo de sistema promedio: {self.avg_system_time:.2f}", ha='center',
-                va='center')
-
         # Establecer límites del eje X
         ax.set_xlim(0, total_duration)
 
         # Mostrar cuadrícula en el gráfico de Gantt
         ax.grid(True, linestyle='--', alpha=0.7)
 
-        # Subplot para mostrar la tabla de procesos
-        table_ax = plt.subplot(2, 1, 2)
+        # Tabla de procesos
+        table_ax = fig.add_subplot(gs[1])
         table_ax.axis('off')
 
         # Crear tabla de procesos
@@ -59,8 +58,13 @@ class Plotter:
         table.set_fontsize(10)
         table.scale(1, 1.5)
 
-        # Ajustar diseño para evitar superposición de subgráficos
-        fig.tight_layout()
+        # Tiempos de espera debajo de la tabla
+        wait_times_ax = fig.add_subplot(gs[2])
+        wait_times_ax.axis('off')
+        wait_times_ax.text(0.5, 0.4, f"Tiempo de espera promedio: {self.avg_waiting_time:.2f}",
+                           ha='center', va='center')
+        wait_times_ax.text(0.5, 0.1, f"Tiempo de sistema promedio: {self.avg_system_time:.2f}",
+                            ha='center', va='center')
 
         plt.show()
 
