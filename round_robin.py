@@ -37,4 +37,3 @@ class Round_robin:
       self.completed_processes.append(current_process)
 
     return self.completed_processes
-
