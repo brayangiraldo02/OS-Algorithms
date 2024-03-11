@@ -3,6 +3,7 @@ from tkinter import ttk
 from process import Process
 from fifo import Fifo
 from sjf import Sjf
+from round_robin import Round_robin
 from priority import Priority
 from plotter import Plotter
 from PIL import Image, ImageTk
@@ -40,7 +41,7 @@ class Controller:
      # Cargar la imagen desde el archivo ./assets/cpu.png
     image_path = "./assets/cpu.png"
     img = Image.open(image_path)
-    img = img.resize((100, 100), Image.ANTIALIAS)  
+    img = img.resize((100, 100))  
     img = ImageTk.PhotoImage(img)
 
     # Crear un label para mostrar la imagen
@@ -204,6 +205,9 @@ class Controller:
     elif self.selected_algorithm == "PRIORIDAD":
       priority = Priority(self.processes)
       self.solution = priority.run()
+    elif self.selected_algorithm == "ROUND ROBIN":
+      round_robin = Round_robin(self.processes, self.Q)
+      self.solution = round_robin.run()
     for p in self.solution:
       print(p.__dict__)
 
