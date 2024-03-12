@@ -96,15 +96,22 @@ class Controller:
     label.pack(pady=10)
 
     entries=[]
+    entry_style = ttk.Style()
+    entry_style.configure('Custom.TEntry', 
+                          padding=(5, 5), 
+                          borderwidth=2, 
+                          relief=tk.RAISED, 
+                          bordercolor='#4CAF50')
 
-    entry = ttk.Entry(root)
+
+    entry = ttk.Entry(root, style='Custom.TEntry')
     entry.pack(pady=5)
     entries.append(entry)
 
     if self.selected_algorithm == "ROUND ROBIN":
       label = ttk.Label(root, text="Ingrese el valor de Q:")
       label.pack(pady=10)
-      entry = ttk.Entry(root)
+      entry = ttk.Entry(root, style='Custom.TEntry')
       entry.pack(pady=5)
       entries.append(entry)
 
@@ -144,7 +151,14 @@ class Controller:
   def get_individual_process(self, process_number):
     root = tk.Tk()
     root.title(f"Proceso {process_number+1}")
-    root.geometry("400x300")
+    # Obtener dimensiones de la pantalla
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    # Calcular coordenadas para centrar la ventana
+    x_coordinate = (screen_width - 350) // 2
+    y_coordinate = (screen_height - 250) // 2
+
+    root.geometry(f"350x250+{x_coordinate}+{y_coordinate}")
 
     if self.selected_algorithm == "PRIORIDAD":
       labels = ["Nombre del proceso","Tiempo de ráfaga", "Tiempo de llegada",  "Prioridad"]
@@ -152,21 +166,35 @@ class Controller:
       labels = ["Nombre del proceso", "Tiempo de ráfaga", "Tiempo de llegada"]
 
     entries = []
+    entry_style = ttk.Style()
+    entry_style.configure('Custom.TEntry', 
+                          padding=(5, 5), 
+                          borderwidth=2, 
+                          relief=tk.RAISED, 
+                          bordercolor='#4CAF50')
 
     for i in range(len(labels)):
       label = ttk.Label(root, text=labels[i])
       label.grid(row=i, column=0, padx=10, pady=10)
-      entry = ttk.Entry(root)
+      entry = ttk.Entry(root, style='Custom.TEntry')
       entry.grid(row=i, column=1, padx=10, pady=10)
       entries.append(entry)
 
     button = ttk.Button(root, text="Guardar",
                         command=lambda: self.set_individual_process(entries, root),
-                        style='Blue.TButton')
+                        style='Custom.TButton')
     button.grid(row=len(labels), columnspan=2, padx=10, pady=10)
 
     style = ttk.Style()
-    style.configure('Blue.TButton', foreground='white', background='blue')
+    # Estilo del botón con bordes redondeados
+    style.configure('Custom.TButton', 
+                    foreground='white', 
+                    background='#4CAF50', 
+                    padding=(5, 5), 
+                    borderwidth=2, 
+                    relief=tk.RAISED, 
+                    bordercolor='white', 
+                    borderradius=5)
 
     # Centrar los elementos en la ventana
     for i in range(len(labels) + 1):  # +1 para incluir la fila del botón
