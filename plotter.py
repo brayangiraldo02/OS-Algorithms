@@ -37,6 +37,23 @@ class Plotter:
 
         # Establecer límites del eje X
         ax.set_xlim(0, total_duration)
+
+         # Mostrar cuadrícula en el gráfico de Gantt
+        ax.grid(True, linestyle='--', alpha=0.7)
+
+        # SubPLot para mostrar la tabla de procesos 
+        plt.subplot(2,1,2)
+        plt.axis('off')
+
+        # Crear tabla de procesos
+        table = plt.table(cellText=[[process.name, process.arrival_time, process.burst_time, process.priority, process.start_time, process.completion_time, process.waiting_time, process.system_time] for process in self.processes],
+                          colLabels=['Nombre', 'T. llegada', 'T. ráfaga', 'Prioridad', 'T. inicio', 'T. finalización', 'T. de espera', 'T de sistema'],
+                          loc='center')
+        
+        # Establecer tamaño de la fuente
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.scale(1, 1.5)
         
         plt.show()
 

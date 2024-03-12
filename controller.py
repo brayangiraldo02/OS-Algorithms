@@ -5,7 +5,7 @@ from fifo import Fifo
 from sjf import Sjf
 from round_robin import Round_robin
 from priority import Priority
-from plotter import Plotter
+from plotter2 import Plotter
 from PIL import Image, ImageTk
 
 
