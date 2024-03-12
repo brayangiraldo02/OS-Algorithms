@@ -53,7 +53,7 @@ class Round_robin:
         prev_process = save_process
 
         if self.processes[0].arrival_time > next_start_time:
-          if prev_process and prev_process.arrival_time <= next_start_time:
+          if prev_process.arrival_time <= next_start_time and prev_process.burst_time > 0:
             self.processes.insert(0, prev_process)
             self.processes.pop()
 
