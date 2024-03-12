@@ -4,7 +4,7 @@ class Round_robin:
   def __init__(self, processes, quantum):
     self.processes = processes
     self.quantum = quantum
-    self.completed_processes = []  # Lista para almacenar los procesos terminados
+    self.completed_processes = []  
 
   def run(self):
     next_start_time = 0
@@ -27,6 +27,7 @@ class Round_robin:
         next_start_time += self.quantum
         current_process.arrival_time = next_start_time
         self.processes.append(current_process)
+        save_process = current_process
       else:
         current_process.completion_time += current_process.burst_time
         next_start_time += current_process.burst_time
@@ -48,5 +49,12 @@ class Round_robin:
         print("Process " + new_process.name + " completed at: " + str(new_process.completion_time))
 
         self.completed_processes.append(new_process)
+
+        prev_process = save_process
+
+        if self.processes[0].arrival_time > next_start_time:
+          if prev_process and prev_process.arrival_time <= next_start_time:
+            self.processes.insert(0, prev_process)
+            self.processes.pop()
 
     return self.completed_processes
