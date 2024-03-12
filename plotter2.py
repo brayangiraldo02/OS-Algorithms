@@ -3,7 +3,8 @@ from matplotlib.gridspec import GridSpec
 
 
 class Plotter:
-    def __init__(self, processes):
+    def __init__(self, initial_processes, processes):
+        self.initial_processes = initial_processes
         self.processes = processes
 
     def plot_gantt_chart(self):
@@ -69,5 +70,5 @@ class Plotter:
         plt.show()
 
     def calc_stats(self):
-        self.avg_system_time = sum([process.system_time for process in self.processes]) / len(self.processes)
-        self.avg_waiting_time = sum([process.waiting_time for process in self.processes]) / len(self.processes)
+        self.avg_system_time = sum([process.system_time for process in self.processes]) / len(self.initial_processes)
+        self.avg_waiting_time = sum([process.waiting_time for process in self.processes]) / len(self.initial_processes)
