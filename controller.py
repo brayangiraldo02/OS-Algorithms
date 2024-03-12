@@ -13,6 +13,7 @@ class Controller:
   def __init__(self):
     self.selected_algorithm = None
     self.processes = []
+    self.initial_processes = []
     self.processes_quantity = 0
     self.get_algorithm()
 
@@ -196,6 +197,7 @@ class Controller:
       self.eval_algorithm()
   
   def eval_algorithm(self):
+    self.initial_processes = self.processes.copy()
     if self.selected_algorithm == "FIFO":
       fifo = Fifo(self.processes)
       self.solution = fifo.run()
@@ -214,7 +216,7 @@ class Controller:
     self.plot_solution()
     
   def plot_solution(self):
-    plotter = Plotter(self.solution)
+    plotter = Plotter(self.initial_processes, self.solution)
     plotter.plot_gantt_chart()
     
       
