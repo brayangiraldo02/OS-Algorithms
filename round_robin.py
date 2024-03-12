@@ -1,3 +1,5 @@
+from process import Process
+
 class Round_robin:
   def __init__(self, processes, quantum):
     self.processes = processes
@@ -17,6 +19,7 @@ class Round_robin:
         current_process.start_time = next_start_time
       current_process.completion_time = next_start_time
 
+      arrival_time = current_process.arrival_time
       if current_process.burst_time > self.quantum:
         current_process.completion_time += self.quantum
         current_process.burst_time -= self.quantum
@@ -27,13 +30,22 @@ class Round_robin:
         current_process.completion_time += current_process.burst_time
         next_start_time += current_process.burst_time
 
-      current_process.waiting_time = current_process.start_time - current_process.arrival_time
-      current_process.system_time = current_process.completion_time - current_process.arrival_time
+      burst_time = current_process.burst_time
+      name = current_process.name
+      waiting_time = current_process.start_time - arrival_time
+      system_time = current_process.completion_time - arrival_time
+      priority = 0
+
+      new_process = Process(name, burst_time, arrival_time, priority)
+      new_process.start_time = current_process.start_time
+      new_process.completion_time = current_process.completion_time
+      new_process.waiting_time = waiting_time
+      new_process.system_time = system_time
 
       print("--------------------------------------------")
-      print("Process " + current_process.name + " start at: " + str(current_process.start_time))
-      print("Process " + current_process.name + " completed at: " + str(current_process.completion_time))
+      print("Process " + new_process.name + " start at: " + str(new_process.start_time))
+      print("Process " + new_process.name + " completed at: " + str(new_process.completion_time))
 
-      self.completed_processes.append(current_process)
+      self.completed_processes.append(new_process)
 
     return self.completed_processes
