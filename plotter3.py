@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
+import tkinter as tk
+from tkinter import ttk
 
 
 class Plotter:
@@ -82,7 +84,53 @@ class Plotter:
                               ha='center', va='center')
 
         plt.show()
+        
+    def plot_table(self):
+         # Crear ventana principal
+        root = tk.Tk()
+        root.title('Tabla de Procesos')
 
+        # Crear el Treeview
+        tree = ttk.Treeview(root)
+        tree["columns"] = ("Nombre", "T. llegada", "T. ráfaga", "Prioridad", "T. inicio",
+                           "T. finalización", "T. de espera", "T. de sistema")
+
+        # Configurar las columnas
+        tree.column("#0", width=0, stretch=tk.NO)  # Columna oculta
+        tree.column("Nombre", anchor=tk.W, width=100)
+        tree.column("T. llegada", anchor=tk.CENTER, width=80)
+        tree.column("T. ráfaga", anchor=tk.CENTER, width=80)
+        tree.column("Prioridad", anchor=tk.CENTER, width=80)
+        tree.column("T. inicio", anchor=tk.CENTER, width=80)
+        tree.column("T. finalización", anchor=tk.CENTER, width=100)
+        tree.column("T. de espera", anchor=tk.CENTER, width=100)
+        tree.column("T. de sistema", anchor=tk.CENTER, width=100)
+
+        # Configurar las cabeceras de las columnas
+        tree.heading("#0", text="", anchor=tk.W)
+        tree.heading("Nombre", text="Nombre", anchor=tk.W)
+        tree.heading("T. llegada", text="T. llegada", anchor=tk.CENTER)
+        tree.heading("T. ráfaga", text="T. ráfaga", anchor=tk.CENTER)
+        tree.heading("Prioridad", text="Prioridad", anchor=tk.CENTER)
+        tree.heading("T. inicio", text="T. inicio", anchor=tk.CENTER)
+        tree.heading("T. finalización", text="T. finalización", anchor=tk.CENTER)
+        tree.heading("T. de espera", text="T. de espera", anchor=tk.CENTER)
+        tree.heading("T. de sistema", text="T. de sistema", anchor=tk.CENTER)
+
+        # Insertar datos en la tabla
+        for process in self.processes:
+          tree.insert("", "end", values=(process.name, process.arrival_time, process.burst_time,
+                                           process.priority, process.start_time, process.completion_time,
+                                           process.waiting_time, process.system_time))
+        
+
+        # Agregar el Treeview a la ventana
+        tree.pack(expand=True, fill=tk.BOTH)
+
+
+
+        # Iniciar el bucle principal de la aplicación
+        root.mainloop()
 
     def calc_stats(self):
         self.avg_system_time = sum([process.system_time for process in self.processes]) / len(self.initial_processes)

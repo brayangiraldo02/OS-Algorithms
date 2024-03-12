@@ -5,7 +5,7 @@ from fifo import Fifo
 from sjf import Sjf
 from round_robin import Round_robin
 from priority import Priority
-from plotter3 import Plotter
+from plotter4 import Plotter
 from PIL import Image, ImageTk
 
 
@@ -218,6 +218,7 @@ class Controller:
   def plot_solution(self):
     plotter = Plotter(self.initial_processes, self.solution)
     plotter.plot_gantt_chart()
+    plotter.plot_table()
     
       
     
