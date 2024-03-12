@@ -64,12 +64,11 @@ class Controller:
     style = ttk.Style()
     # Estilo del botón con bordes redondeados
     style.configure('Custom.TButton', 
-                    foreground='white', 
+                    foreground='#4CAF50', 
                     background='#4CAF50', 
                     padding=(5, 5), 
                     borderwidth=2, 
                     relief=tk.RAISED, 
-                    bordercolor='white', 
                     borderradius=5)
 
     root.mainloop()
@@ -117,12 +116,11 @@ class Controller:
     style = ttk.Style()
     # Estilo del botón con bordes redondeados
     style.configure('Custom.TButton', 
-                    foreground='white', 
+                    foreground='#4CAF50', 
                     background='#4CAF50', 
                     padding=(5, 5), 
                     borderwidth=2, 
                     relief=tk.RAISED, 
-                    bordercolor='white', 
                     borderradius=5)
     root.mainloop()
 
